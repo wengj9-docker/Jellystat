@@ -1,10 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 import React, { useState, useEffect } from 'react';
-import {
-  Routes,
-  Route,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import axios from 'axios';
 
 import Config from './lib/config';
@@ -25,6 +22,7 @@ import Libraries from './pages/libraries';
 import LibraryInfo from './pages/components/library-info';
 import ItemInfo from './pages/components/item-info';
 import ErrorPage from './pages/components/general/error';
+import About from './pages/about';
 
 
 import Testing from './pages/testing';
@@ -67,7 +65,7 @@ function App() {
       axios
       .get("/auth/isConfigured")
       .then(async (response) => {
-        console.log(response);
+        // console.log(response);
         if(response.status===200)
         {
           setisConfigured(true);
@@ -119,9 +117,10 @@ if (config  && config.apiKey ===null) {
 if (config  && isConfigured && token!==null){
   return (
     <div className="App">
-      <Navbar />
-      <div>
-      <main>
+ 
+      <div className='d-flex flex-column flex-md-row'>
+      <Navbar/>
+      <main className='w-md-100'>
         <Routes>
         <Route path="/" element={<Home />} />
           <Route path="/settings" element={<Settings />} />
@@ -133,6 +132,7 @@ if (config  && isConfigured && token!==null){
           <Route path="/statistics" element={<Statistics />} />
           <Route path="/activity" element={<Activity />} />
           <Route path="/testing" element={<Testing />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </main>
       </div>

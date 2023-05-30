@@ -9,9 +9,10 @@ import FilmLineIcon from "remixicon-react/FilmLineIcon";
 import Loading from './general/loading';
 import LibraryGlobalStats from './library/library-stats';
 import LibraryLastWatched from './library/last-watched';
-import RecentlyPlayed from './library/recently-added';
+import RecentlyAdded from './library/recently-added';
 import LibraryActivity from './library/library-activity';
 import LibraryItems from './library/library-items';
+import ErrorBoundary from './general/ErrorBoundary';
 
 import { Tabs, Tab, Button, ButtonGroup } from 'react-bootstrap';
 
@@ -84,7 +85,10 @@ function LibraryInfo() {
           <Tabs defaultActiveKey="tabOverview" activeKey={activeTab} variant='pills'>
           <Tab eventKey="tabOverview" className='bg-transparent'>
             <LibraryGlobalStats LibraryId={LibraryId}/>
-            <RecentlyPlayed LibraryId={LibraryId}/>
+            <ErrorBoundary>
+              <RecentlyAdded LibraryId={LibraryId}/>
+            </ErrorBoundary>
+           
             <LibraryLastWatched LibraryId={LibraryId}/>
           </Tab>
           <Tab eventKey="tabActivity" className='bg-transparent'>

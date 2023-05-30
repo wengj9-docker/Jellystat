@@ -28,12 +28,26 @@ function ticksToTimeString(ticks) {
 
   return timeString;
 }
+function convertBitrate(bitrate) {
+  if(!bitrate)
+  {
+    return 'N/A';
+  }
+  const kbps = (bitrate / 1000).toFixed(1);
+  const mbps = (bitrate / 1000000).toFixed(1);
+
+  if (kbps >= 1000) {
+    return  mbps+' Mbps';
+  } else {
+    return  kbps+' Kbps';
+  }
+}
 
 function sessionCard(props) {
   // Access data passed in as a prop using `props.data`
 
   const cardStyle = {
-    backgroundImage: `url(${props.data.base_url}/Items/${(props.data.session.NowPlayingItem.SeriesId ? props.data.session.NowPlayingItem.SeriesId : props.data.session.NowPlayingItem.Id)}/Images/Backdrop?fillHeight=320&fillWidth=213&quality=80), linear-gradient(to right, #00A4DC, #AA5CC3)`,
+    backgroundImage: `url(Proxy/Items/Images/Backdrop?id=${(props.data.session.NowPlayingItem.SeriesId ? props.data.session.NowPlayingItem.SeriesId : props.data.session.NowPlayingItem.Id)}&fillHeight=320&fillWidth=213&quality=80), linear-gradient(to right, #00A4DC, #AA5CC3)`,
     height:'100%',
     backgroundSize: 'cover',
   };
@@ -53,31 +67,27 @@ function sessionCard(props) {
               <Card.Img
                 variant="top"
                 className="stat-card-image rounded-0"
-                src={props.data.base_url + "/Items/" + (props.data.session.NowPlayingItem.SeriesId ? props.data.session.NowPlayingItem.SeriesId : props.data.session.NowPlayingItem.Id) + "/Images/Primary?fillHeight=320&fillWidth=213&quality=50"}
+                src={"/Proxy/Items/Images/Primary?id=" + (props.data.session.NowPlayingItem.SeriesId ? props.data.session.NowPlayingItem.SeriesId : props.data.session.NowPlayingItem.Id) + "&fillHeight=320&fillWidth=213&quality=50"}
               />
 
 
         </Col>
-        <Col  className="stat-card-info w-100 mt-auto ">
+        <Col  className="w-100 mt-auto ">
 
-          <Card.Body  className="w-100" >
+          <Card.Body  className="w-100 pb-2" >
             <Container className="p-0">
               <Row className="position-absolute top-0">
                   <Col className="col-auto d-flex justify-content-center">
                   <img
                    className="card-device-image"
                    src={
-                  props.data.base_url +
-                  "/web/assets/img/devices/" 
+                  "/proxy/web/assets/img/devices/?devicename=" 
                   +
                   (props.data.session.Client.toLowerCase().includes("web") ? 
-                  ( clientData.find(item => props.data.session.DeviceName.toLowerCase().includes(item)) || "other")
+                  ( clientData.find(item => props.data.session.DeviceName.toLowerCase().includes(item)).replace('ios','apple') || "other")
                   :
-                  ( clientData.find(item => props.data.session.Client.toLowerCase().includes(item)) || "other")
-                  )
-                  +
-                  ".svg"
-                   }
+                  ( clientData.find(item => props.data.session.Client.toLowerCase().includes(item)).replace('ios','apple') || "other")
+                  )}
                   alt=""
                    />
                   </Col>
@@ -85,6 +95,8 @@ function sessionCard(props) {
                   <Col>
                     <Row> {props.data.session.DeviceName}</Row>
                     <Row>    {props.data.session.Client + " " + props.data.session.ApplicationVersion}</Row>
+                    <Row>    {props.data.session.PlayState.PlayMethod+' '+ (props.data.session.NowPlayingItem.MediaStreams ? '( '+props.data.session.NowPlayingItem.MediaStreams.find(stream => stream.Level>0)?.Codec.toUpperCase()+(props.data.session.TranscodingInfo? ' - '+props.data.session.TranscodingInfo.VideoCodec.toUpperCase() : '')+' - '+convertBitrate(props.data.session.TranscodingInfo ? props.data.session.TranscodingInfo.Bitrate :props.data.session.NowPlayingItem.MediaStreams.find(stream => stream.Level>0)?.BitRate)+' )':'')}</Row>
+                    
                   </Col>
               </Row>
 
@@ -105,11 +117,8 @@ function sessionCard(props) {
                           <img
                             className="card-user-image"
                             src={
-                              props.data.base_url +
-                              "/Users/" +
+                              "/Proxy/Users/Images/Primary?id=" +
                               props.data.session.UserId +
-                              "/Images/Primary?tag=" +
-                              props.data.session.UserPrimaryImageTag +
                               "&quality=50"
                             }
                             alt=""
@@ -128,6 +137,21 @@ function sessionCard(props) {
                       </Row>
                 </Col>
               </Row>
+
+              {props.data.session.NowPlayingItem.Type==='Episode' ? 
+                
+                <Row>
+
+                <Col className="col-auto">
+                         <Card.Text className="text-end">
+                            {'S'+props.data.session.NowPlayingItem.ParentIndexNumber +' - E'+ props.data.session.NowPlayingItem.IndexNumber}
+                         </Card.Text>
+                        </Col>
+                </Row>
+                :
+                <></>
+              
+              }
 
               <Row className="d-flex">
                 <Col className="col-auto">

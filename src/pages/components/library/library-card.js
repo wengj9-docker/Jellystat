@@ -36,23 +36,29 @@ function LibraryCard(props) {
 
 
   function formatTotalWatchTime(seconds) {
-    const hours = Math.floor(seconds / 3600); // 1 hour = 3600 seconds
-    const minutes = Math.floor((seconds % 3600) / 60); // 1 minute = 60 seconds
-    let formattedTime='';
-    if(hours)
-    {
-      formattedTime+=`${hours} hours`;
+    const days = Math.floor(seconds / 86400); // 1 day = 86400 seconds
+    const hours = Math.floor((seconds % 86400) / 3600); // 1 hour = 3600 seconds
+    const minutes = Math.floor(((seconds % 86400) % 3600) / 60); // 1 minute = 60 seconds
+    
+    let formattedTime = '';
+    if (days) {
+      formattedTime += `${days} day${days > 1 ? 's' : ''}`;
     }
-    if(minutes)
-    {
-      formattedTime+=` ${minutes} minutes`;
+    
+    if (hours) {
+      formattedTime += ` ${hours} hour${hours > 1 ? 's' : ''}`;
     }
-    if(!hours && !minutes)
-    {
-      formattedTime=`0 minutes`;
+    
+    if (minutes) {
+      formattedTime += ` ${minutes} minute${minutes > 1 ? 's' : ''}`;
     }
-  
-    return formattedTime ;
+    
+    if (!days && !hours && !minutes) {
+      formattedTime = '0 minutes';
+    }
+    
+    return formattedTime;
+    
   }
 
   function formatLastActivityTime(time) {
@@ -74,30 +80,17 @@ function LibraryCard(props) {
     return `${formattedTime}ago`;
   }
   return (
-      <Card className="bg-transparent lib-card border-0">
+      <Card className="bg-transparent lib-card rounded-3">
           <Link to={`/libraries/${props.data.Id}`}>
             <div className="library-card-image">
               <Card.Img
                   variant="top"
                   className="library-card-banner"
-                  src={props.base_url + "/Items/" + props.data.Id + "/Images/Primary/?fillWidth=800&quality=50"}
+                  src={"/proxy/Items/Images/Primary?id=" + props.data.Id + "&fillWidth=800&quality=50"}
               />
             </div>
           </Link>
 
-       <Link to={`/libraries/${props.data.Id}`}>
-            <div
-              className="library-card-banner"
-              style={{
-                backgroundImage: `url(${
-                  props.base_url +
-                  "/Items/" +
-                  props.data.Id +
-                  "/Images/Primary/?fillWidth=400&quality=90"
-                })`,
-              }}
-            />
-      </Link>
 
           <Card.Body className="library-card-details">
             <Row className="space-between-end card-row">

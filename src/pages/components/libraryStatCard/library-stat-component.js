@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Row, Col, Card } from "react-bootstrap";
 
 function LibraryStatComponent(props) {
@@ -24,15 +25,14 @@ function LibraryStatComponent(props) {
     <Card className="stat-card rounded-3" style={cardStyle}>
     <div style={cardBgStyle} className="rounded-3">
       <Row className="h-100">
+        
         <Col className="d-none d-lg-block stat-card-banner">
-
           <div className="stat-card-icon">
               {props.icon} 
           </div>
-
-
         </Col>
-        <Col  className="stat-card-info w-100">
+
+        <Col  className="w-100">
           <Card.Body  className="w-100" >
           <Card.Header className="d-flex justify-content-between border-0 p-0 bg-transparent stat-header">
               <div>
@@ -48,7 +48,7 @@ function LibraryStatComponent(props) {
               
                 <div className="d-flex justify-content-between">
                   <Card.Text className="stat-item-index m-0">{index + 1}</Card.Text>
-                  <Card.Text>{item.Name}</Card.Text>
+                  <Link to={`/libraries/${item.Id}`}><Card.Text>{item.Name}</Card.Text></Link>
                 </div>
                 
                 <Card.Text className="stat-item-count">
